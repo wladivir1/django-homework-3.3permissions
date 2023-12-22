@@ -2,7 +2,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
-from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
+from .permissions import IsOwnerOrAdminOrReadOnly
 from .serializers import AdvertisementSerializer
 from .filters import AdvertisementFilter
 from .models import Advertisement
@@ -17,10 +17,8 @@ class AdvertisementViewSet(ModelViewSet):
         
     def get_permissions(self):
         """Получение прав для действий."""
-        if self.action in ["update", "partial_update", "destroy"]:
-            return [IsAuthenticated(),IsAdminOrReadOnly()]
         if self.action in ["create", "update", "partial_update", "destroy"]:
-            return [IsAuthenticated(), IsOwnerOrReadOnly()]
+            return [IsAuthenticated(), IsOwnerOrAdminOrReadOnly()]
         
         return []
     
